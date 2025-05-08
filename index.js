@@ -4,6 +4,8 @@ import connection from "./config/db.js";
 import User from "./models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import todoRoutes from "./routes/todoRoutes.js";
+import authMiddleware from "./middlewares/auth.middleware.js";
 dotenv.config();
 const app=express();
 const PORT=process.env.PORT || 4000;
@@ -13,6 +15,8 @@ const PORT=process.env.PORT || 4000;
 connection()
 
 app.use(express.json());
+
+app.use("/todos",todoRoutes)
 
 //temperory route
 app.post("/test/user",async(req,res)=>{
@@ -57,8 +61,14 @@ app.post("/login",async(req,res)=>{
     }
 })
 
+
+//protected route example
+app.get("/protected",authMiddleware,(req,res)=>{
+    res.status(200).json({message:"You have acceces  a protected route",userId:req.user})
+})
+
 app.get("/",(req,res)=>{
-    res.send("welcome my nigga welcome")
+    res.send("welcome welcome")
 })
 
 app.listen(PORT,()=>{
